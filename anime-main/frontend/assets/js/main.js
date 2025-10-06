@@ -31,13 +31,6 @@
         }
     });
 
-    /*------------------
-        Background Set
-    --------------------*/
-    $('.set-bg').each(function () {
-        var bg = $(this).data('setbg');
-        $(this).css('background-image', 'url(' + bg + ')');
-    });
 
     // Search model
     $('.search-switch').on('click', function () {
@@ -89,13 +82,5 @@
         Niceselect
     --------------------*/
     $('select').niceSelect();
-
-    /*------------------
-        Scroll To Top
-    --------------------*/
-    $("#scrollToTopButton").click(function() {
-        $("html, body").animate({ scrollTop: 0 }, "slow");
-        return false;
-     });
 
 })(jQuery);
