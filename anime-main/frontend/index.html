@@ -65,6 +65,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#log">Log In</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#add">Add Anime</a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
@@ -81,12 +84,13 @@
 
     <section id="page-content">
         <main id="spapp" role="main">
-            <section id="home"></section>
-            <section id="categories"></section>
-            <section id="watch"></section>
-            <section id="details"></section>
-            <section id="sign"></section>
-            <section id="log"></section>
+            <section id="home" deta-load="home.html"><h1>Home</h1></section>
+            <section id="categories" data-load="categories.html"><h1>Categories</h1></section>
+            <section id="watch" data-load="anime-watching.html"><h1>Watch Anime</h1></section>
+            <section id="details" data-load="anime-details.html"><h1>Anime <Details></Details></h1></section>
+            <section id="sign" data-load="signup.html"><h1>Sing In</h1></section>
+            <section id="log" data-load="login.html"><h1>Log in</h1></section>
+            <section id="add" data-load="add-anime.html"><h1>Add Anime</h1></section>
     </section>
     <!-- Header End -->
 
