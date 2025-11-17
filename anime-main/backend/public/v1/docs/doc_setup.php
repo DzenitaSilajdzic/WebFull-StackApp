@@ -1,4 +1,4 @@
-<<?php
+<?php
 /**
 * @OA\Info(
 *     title="API",
@@ -12,7 +12,7 @@
 */
 /**
 * @OA\Server(
-*     url= "http://http://localhost/WebFull-StackApp/anime-main/backend",
+*     url= "http://localhost/WebFull-StackApp/anime-main/backend/",
 *     description="API server"
 * )
 */
@@ -73,7 +73,7 @@
  * title="Anime List",
  * description="A collection of anime entries",
  * type="array",
- * @OA\Items(
+ * items=@OA\Items(
  * ref="#/components/schemas/Anime"
  * )
  * )
@@ -99,5 +99,44 @@
  * "code": 404,
  * "message": "Anime not found with the given ID."
  * }
+ * )
+ */
+
+/**
+ * @OA\Schema(
+ * schema="User",
+ * title="User",
+ * description="User account details",
+ * @OA\Property(
+ * property="id",
+ * type="integer",
+ * format="int64",
+ * description="Unique identifier for the user"
+ * ),
+ * @OA\Property(
+ * property="username",
+ * type="string",
+ * description="User's unique username",
+ * example="testuser1"
+ * ),
+ * @OA\Property(
+ * property="email",
+ * type="string",
+ * format="email",
+ * description="User's unique email address",
+ * example="user@email.com"
+ * ),
+ * @OA\Property(
+ * property="name",
+ * type="string",
+ * description="User's full name (optional)",
+ * example="Test User"
+ * ),
+ * @OA\Property(
+ * property="status",
+ * type="string",
+ * description="Account status",
+ * example="active"
+ * )
  * )
  */

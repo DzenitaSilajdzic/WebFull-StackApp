@@ -68,31 +68,70 @@ Flight::route('GET /anime/@id', function($id){
 });
 
 /**
-* @OA\Post(
-* path="/anime/add",
-* tags={"anime"},
-* summary="Add a new anime and its first episode (Admin Only)",
-* @OA\RequestBody(
-* required=true,
-* @OA\JsonContent(
-* required={"title", "type", "release_date", "details", "episode_video"},
-* @OA\Property(property="title", type="string", example="New Anime Series"),
-* @OA\Property(property="type", type="string", example="TV"),
-* @OA\Property(property="release_date", type="string", format="date", example="2025-01-01"),
-* @OA\Property(property="details", type="string", example="A summary of the new show"),
-* @OA\Property(property="episode_video", type"string", exemlpe="episode1.mp4")
-* @OA\Property(property="studio_id", type="integer", example=1, description="ID of the main studio"),
-* @OA\Property(property="category_ids", type="array", @OA\Items(type="integer"), example={1, 3}, description="Array of category IDs"),
-* )
-* ),
-* @OA\Response(
-* response=200,
-* description="Anime successfully added"
-* ),
-* @OA\Response(response=400, description="Validation error"),
-* @OA\Response(response=403, description="Forbidden (Requires Admin role)")
-* )
-*/
+ * @OA\Post(
+ *   path="/anime/add",
+ *   tags={"anime"},
+ *   summary="Add a new anime and its first episode (Admin Only)",
+ *   @OA\RequestBody(
+ *     required=true,
+ *     @OA\JsonContent(
+ *       required={"title", "type", "release_date", "details", "episode_video"},
+ *       @OA\Property(
+ *         property="title",
+ *         type="string",
+ *         example="New Anime Series"
+ *       ),
+ *       @OA\Property(
+ *         property="type",
+ *         type="string",
+ *         example="TV"
+ *       ),
+ *       @OA\Property(
+ *         property="release_date",
+ *         type="string",
+ *         format="date",
+ *         example="2025-01-01"
+ *       ),
+ *       @OA\Property(
+ *         property="details",
+ *         type="string",
+ *         example="A summary of the new show"
+ *       ),
+ *       @OA\Property(
+ *         property="episode_video",
+ *         type="string",
+ *         example="episode1.mp4"
+ *       ),
+ *       @OA\Property(
+ *         property="studio_id",
+ *         type="integer",
+ *         example=1,
+ *         description="ID of the main studio"
+ *       ),
+ *       @OA\Property(
+ *         property="category_ids",
+ *         type="array",
+ *         items=@OA\Items(type="integer"),
+ *         example={1, 3},
+ *         description="Array of category IDs"
+ *       )
+ *     )
+ *   ),
+ *   @OA\Response(
+ *     response=200,
+ *     description="Anime successfully added"
+ *   ),
+ *   @OA\Response(
+ *     response=400,
+ *     description="Validation error"
+ *   ),
+ *   @OA\Response(
+ *     response=403,
+ *     description="Forbidden (Requires Admin role)"
+ *   )
+ * )
+ */
+
 Flight::route('POST /anime/add', function(){
     try {
         $data = Flight::request()->data->getData();
