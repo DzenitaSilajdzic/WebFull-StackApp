@@ -1,91 +1,199 @@
-<!DOCTYPE html>
-<html lang="eng">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Add Anime</title>
-    </head>
-    <body>
-        <h1>Add new Anime and Episodes</h1>
-        <div class="mb-3">
-            <form id="uplad-form">
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
+<div class="container">
+    <div class="card">
+        <div class="card-header text-center">
+            Add New Anime Series or Movie
+        </div>
+        <div class="card-body">
+            <form id="add-anime-form">
+
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title">Anime Title (English/Official):</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
                 </div>
 
-                <div class="upload-input">
-                <label for="description">Anime description:</label>
-                <textarea id="m_textbox" name="textbox" rows="4" cols="50"></textarea>
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description">Description/Synopsis:</label>
+                    <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
                 </div>
 
-                <div class="upload-input">
-                <label for="type">Anime name:</label>
-                <input type="text" id="name" name="name">
+                <!-- Type and Status Row -->
+                <div class="form-row">
+                    <!-- Type -->
+                    <div class="form-group col-md-6">
+                        <label for="type">Type:</label>
+                        <select class="form-control" id="type" name="type" required>
+                            <option value="">Select Type</option>
+                            <option value="TV">TV Series</option>
+                            <option value="Movie">Movie</option>
+                            <option value="OVA">OVA</option>
+                            <option value="Special">Special</option>
+                            <option value="ONA">ONA</option>
+                        </select>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group col-md-6">
+                        <label for="status">Status:</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="">Select Status</option>
+                            <option value="airing">Airing</option>
+                            <option value="completed">Completed</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
+                <!-- Episodes and Release Date Row -->
+                <div class="form-row">
+                    <!-- Episodes -->
+                    <div class="form-group col-md-6">
+                        <label for="episodes">Total Episodes:</label>
+                        <input type="number" class="form-control" id="episodes" name="episodes" min="0" value="0" required>
+                    </div>
+
+                    <!-- Release Date -->
+                    <div class="form-group col-md-6">
+                        <label for="release_date">Release Date:</label>
+                        <input type="date" class="form-control" id="release_date" name="release_date" required>
+                    </div>
                 </div>
 
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
+                <!-- Trailer URL -->
+                <div class="form-group">
+                    <label for="trailer">Trailer URL (Optional):</label>
+                    <input type="url" class="form-control" id="trailer" name="trailer" placeholder="e.g., https://youtube.com/...">
+                    <small class="form-text text-muted">A link to a YouTube or official trailer.</small>
                 </div>
 
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
+                <!-- Cover Image URL -->
+                <div class="form-group">
+                    <label for="cover_image">Cover Image URL:</label>
+                    <input type="url" class="form-control" id="cover_image" name="cover_image" placeholder="e.g., https://example.com/cover.jpg" required>
                 </div>
 
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
+                <!-- Categories Multi-Select -->
+                <div class="form-group">
+                    <label for="category_ids">Categories (Hold CTRL/CMD to select multiple):</label>
+                    <select multiple class="form-control form-control-multiselect" id="category_ids" name="category_ids[]" required>
+                        <!-- Placeholder categories - In a real app, this would be populated via an API call -->
+                        <option value="1">Action</option>
+                        <option value="2">Comedy</option>
+                        <option value="3">Drama</option>
+                        <option value="4">Fantasy</option>
+                        <option value="5">Sci-Fi</option>
+                        <option value="6">Romance</option>
+                        <option value="7">Adventure</option>
+                        <option value="8">Mystery</option>
+                        <option value="9">Thriller</option>
+                    </select>
                 </div>
 
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
+                <!-- Studios Multi-Select -->
+                <div class="form-group">
+                    <label for="studio_ids">Studios (Hold CTRL/CMD to select multiple):</label>
+                    <select multiple class="form-control form-control-multiselect" id="studio_ids" name="studio_ids[]">
+                        <!-- Placeholder studios - In a real app, this would be populated via an API call -->
+                        <option value="1">Studio Ghibli</option>
+                        <option value="2">Madhouse</option>
+                        <option value="3">MAPPA</option>
+                        <option value="4">Toei Animation</option>
+                        <option value="5">Ufotable</option>
+                    </select>
                 </div>
 
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
-                </div>
-
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
-                </div>
-
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
-                </div>
-
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
-                </div>
-
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
-                </div>
-
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
-                </div>
-
-                <div class="upload-input">
-                <label for="name">Anime name:</label>
-                <input type="text" id="name" name="name">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Add</button>
+                <button type="submit" class="btn btn-primary btn-block">Add Anime</button>
             </form>
         </div>
-    </body>
-</html>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    document.getElementById('add-anime-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const form = event.target;
+        const formData = new FormData(form);
+        const data = {};
+        
+        // Convert FormData to a regular object, handling arrays for multi-selects
+        for (let [key, value] of formData.entries()) {
+            if (key.endsWith('[]')) {
+                // Handle multi-select arrays
+                const baseKey = key.slice(0, -2);
+                if (!data[baseKey]) {
+                    data[baseKey] = [];
+                }
+                data[baseKey].push(parseInt(value));
+            } else {
+                data[key] = value;
+            }
+        }
+        
+        // Convert episodes to integer
+        data.episodes = parseInt(data.episodes);
+        
+        // The arrays collected by FormData for multi-select are tricky.
+        // We need to re-handle them correctly for JSON format.
+        // For simplicity in this front-end mockup:
+        
+        // Get selected category IDs
+        const categorySelect = document.getElementById('category_ids');
+        const selectedCategories = Array.from(categorySelect.options)
+            .filter(option => option.selected)
+            .map(option => parseInt(option.value));
+        data.category_ids = selectedCategories;
+        
+        // Get selected studio IDs
+        const studioSelect = document.getElementById('studio_ids');
+        const selectedStudios = Array.from(studioSelect.options)
+            .filter(option => option.selected)
+            .map(option => parseInt(option.value));
+        data.studio_ids = selectedStudios;
+
+        // Clean up keys that might have been partially processed (e.g., 'category_ids' might be an empty string if nothing was selected)
+        delete data['category_ids[]'];
+        delete data['studio_ids[]'];
+
+        console.log('Form data to submit:', data);
+
+        // --- Actual API Submission Logic (Placeholder) ---
+        // In a real application, you would make a fetch/XHR call here:
+        /*
+        fetch('/rest/anime/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add Authorization header here if needed
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('Success:', result);
+            alert('Anime added successfully!'); // Replace with a proper modal/message box
+            form.reset();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to add anime: ' + error.message); // Replace with a proper modal/message box
+        });
+        */
+        
+        // Placeholder success message (replace with proper UI notification)
+        alert('Anime data ready for submission (check console for payload)');
+        form.reset();
+    });
+</script>

@@ -132,7 +132,8 @@ Flight::route('GET /anime/@id', function($id){
  * )
  */
 
-Flight::route('POST /anime/add', function(){
+Flight::route('POST /admin/anime/add', function() {
+    Flight::authMiddleware()->authorize(Roles::ADMIN);
     try {
         $data = Flight::request()->data->getData();
         Flight::json(Flight::animeService()->add_new_anime($data));
@@ -161,6 +162,7 @@ Flight::route('POST /anime/add', function(){
 * )
 */
 Flight::route('DELETE /anime/@id', function($id){
+    Flight::authMiddleware()->authorize(Roles::ADMIN);
     try {
         Flight::json(Flight::animeService()->remove_anime($id), 200);
     } catch (Exception $e) {

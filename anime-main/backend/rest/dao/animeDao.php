@@ -5,47 +5,49 @@ class AnimeDao extends BaseDao
 {
     public function __construct()
     {
-        parent::__construct("anime");
+        parent::__construct("anime"); // Assuming your main table is named 'anime'
     }
 
     /**
-     * anime home/category pages
+     * anime home/category pages (WITHOUT RATING CALCULATION)
      */
-    public function getAnimeListing($offset = 0, $limit = 10, $category_id = null)
-    {
-        $query = "
-            SELECT
-                a.id, a.title, a.image_url, a.type, a.status, a.popularity AS total_views,
-                COUNT(DISTINCT c.id) AS total_comments,
-                COUNT(DISTINCT e.id) AS total_episodes,
-                (SELECT COUNT(id) FROM episodes WHERE anime_id = a.id AND status = 'aired') AS episodes_aired
-            FROM anime AS a
-            LEFT JOIN comments AS c ON a.id = c.anime_id AND c.status = 'active'
-            LEFT JOIN anime_categories AS ac ON a.id = ac.anime_id
-            WHERE a.status != 'deleted'
-        ";
-        $params = [];
-       
-        if ($category_id) {
-            $query .= " AND ac.category_id = :category_id";
-            $params[':category_id'] = $category_id;
-        }
-       
-        $query .= " GROUP BY a.id, a.title, a.image_url, a.type, a.status, a.popularity
-                    ORDER BY a.release_date DESC
-                    LIMIT :limit OFFSET :offset";
-       
-        $params[':limit'] = $limit;
-        $params[':offset'] = $offset;
+   public function getAnimeListing($offset = 0, $limit = 10, $search = NULL) {
 
-        return $this->query($query, $params);
+    // FIX 1: Explicitly cast to integer for safe SQL pagination
+    $limit = (int) $limit;
+    $offset = (int) $offset;
+
+    // FIX 2: Removed AVG(c.rating) and the LEFT JOIN/GROUP BY clauses.
+    $query = "
+        SELECT a.* FROM anime a
+    ";
+    
+    $params = [];
+    $where_clauses = [];
+
+    if ($search) {
+        // Using WHERE since GROUP BY and HAVING were removed.
+        $where_clauses[] = " a.name LIKE :search OR a.description LIKE :search ";
+        $params['search'] = '%' . $search . '%';
     }
+    
+    // Add WHERE clause if search is present
+    if (!empty($where_clauses)) {
+        $query .= " WHERE " . implode(' AND ', $where_clauses);
+    }
+    
+    // FIX 3: Inject the clean integer values for LIMIT and OFFSET
+    $query .= " LIMIT " . $limit . " OFFSET " . $offset;
+
+    return $this->query($query, $params); 
+}
 
     /**
      * data for one anime
      */
     public function getAnimeDetails($anime_id)
     {
+        // This query relies on categories and studios, NOT comments/ratings.
         $query = "
             SELECT
                 a.*,
@@ -86,7 +88,7 @@ class AnimeDao extends BaseDao
         $junctionDao = new BaseDao('anime_categories');
         return $junctionDao->add(['anime_id' => $anime_id, 'category_id' => $category_id]);
     }
-   
+
     /**
      * for many-to-many with studios.
      */
@@ -96,3 +98,4 @@ class AnimeDao extends BaseDao
         return $junctionDao->add(['anime_id' => $anime_id, 'studio_id' => $studio_id]);
     }
 }
+?>
