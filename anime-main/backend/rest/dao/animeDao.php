@@ -5,19 +5,14 @@ class AnimeDao extends BaseDao
 {
     public function __construct()
     {
-        parent::__construct("anime"); // Assuming your main table is named 'anime'
+        parent::__construct("anime");
     }
 
-    /**
-     * anime home/category pages (WITHOUT RATING CALCULATION)
-     */
    public function getAnimeListing($offset = 0, $limit = 10, $search = NULL) {
 
-    // FIX 1: Explicitly cast to integer for safe SQL pagination
     $limit = (int) $limit;
     $offset = (int) $offset;
 
-    // FIX 2: Removed AVG(c.rating) and the LEFT JOIN/GROUP BY clauses.
     $query = "
         SELECT a.* FROM anime a
     ";
@@ -26,17 +21,13 @@ class AnimeDao extends BaseDao
     $where_clauses = [];
 
     if ($search) {
-        // Using WHERE since GROUP BY and HAVING were removed.
         $where_clauses[] = " a.name LIKE :search OR a.description LIKE :search ";
         $params['search'] = '%' . $search . '%';
     }
-    
-    // Add WHERE clause if search is present
     if (!empty($where_clauses)) {
         $query .= " WHERE " . implode(' AND ', $where_clauses);
     }
-    
-    // FIX 3: Inject the clean integer values for LIMIT and OFFSET
+
     $query .= " LIMIT " . $limit . " OFFSET " . $offset;
 
     return $this->query($query, $params); 
@@ -47,7 +38,6 @@ class AnimeDao extends BaseDao
      */
     public function getAnimeDetails($anime_id)
     {
-        // This query relies on categories and studios, NOT comments/ratings.
         $query = "
             SELECT
                 a.*,

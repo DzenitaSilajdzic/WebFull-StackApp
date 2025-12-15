@@ -38,7 +38,6 @@ class AnimeService extends BaseService {
      * add new anime, first episode
      */
     public function add_new_anime($data) {
-        // insert 
         $anime_data = [
             'title' => $data['title'],
             'type' => $data['type'],
@@ -53,7 +52,6 @@ class AnimeService extends BaseService {
 
         // insert-anime_studio
         if (!empty($data['studio_id'])) {
-            // studio_id=arrayIDs/singleID
             $studio_ids = is_array($data['studio_id']) ? $data['studio_id'] : [$data['studio_id']];
             foreach ($studio_ids as $studio_id) {
                  $this->dao->addAnimeStudio($anime_id, (int)$studio_id);

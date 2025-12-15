@@ -3,10 +3,12 @@
         <div class="row">
             <div class="col-lg-10 offset-lg-1">
                 <div class="section-title">
-                    <h4>Add New Anime</h4>
+                    <h4>Edit Anime</h4>
                 </div>
-                <form id="add-anime-form" class="anime__form">
+                <form id="edit-anime-form" class="anime__form">
                     
+                    <input type="hidden" id="anime-id" name="anime_id" value=""> 
+
                     <h5 class="mt-4">Anime Metadata</h5>
                     <div class="row">
                         <div class="col-lg-6">
@@ -72,31 +74,9 @@
                         <textarea placeholder="Full anime description..." id="anime-description" rows="4" required></textarea>
                     </div>
 
-                    
-                    <h5 class="mt-5">Initial Episode (Episode 1)</h5>
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="input-list">
-                                <label for="episode-number">Episode Number</label>
-                                <input type="number" id="episode-number" value="1" readonly>
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="input-list">
-                                <label for="episode-title">Episode Title</label>
-                                <input type="text" id="episode-title" placeholder="Title for Episode 1 (e.g., The Beginning)">
-                            </div>
-                        </div>
-                    </div>
+                    <div id="edit-anime-status" class="mt-4 text-center"></div>
 
-                    <div class="input-list">
-                        <label for="video-url">Video Embed URL</label>
-                        <input type="url" id="video-url" placeholder="https://example.com/video.mp4" required>
-                    </div>
-
-                    <div id="add-anime-status" class="mt-4 text-center"></div>
-
-                    <button type="submit" class="site-btn primary-btn mt-3">SUBMIT NEW ANIME</button>
+                    <button type="submit" class="site-btn primary-btn mt-3">SAVE CHANGES</button>
                 </form>
             </div>
         </div>
@@ -104,5 +84,10 @@
 </section>
 
 <script>
-     
+    $(function() {
+        const $form = $('#edit-anime-form');
+        if (typeof window.handleEditAnimeSubmission !== 'undefined') {
+            $form.off('submit').on('submit', window.handleEditAnimeSubmission);
+        }
+    });
 </script>
