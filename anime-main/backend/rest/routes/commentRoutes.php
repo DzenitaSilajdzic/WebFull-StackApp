@@ -73,6 +73,7 @@ Flight::route('POST /comments/add', function(){
 * )
 */
 Flight::route('DELETE /comments/@id', function($id){
+    Flight::auth_middleware()->autorizeRole(Roles::ADMIN);
     try {
         Flight::json(Flight::commentService()->remove_comment($id), 200);
     } catch (Exception $e) {

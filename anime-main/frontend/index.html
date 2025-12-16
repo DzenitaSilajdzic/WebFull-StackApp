@@ -68,14 +68,30 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#add">Add Anime</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#edit">Edit Anime</a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
                 </div>
                 <div class="col-lg-2">
                     <div class="header__right">
-                        <a href="#" class="search-switch"><span class="icon_search"></span></a>
+                        <div id="unauth-links">
+                            <a href="#login"><span class="icon_profile"></span> Login</a>
+                            <a href="#signup" class="primary-btn">Sign Up</a>
                     </div>
+    
+                        <div id="auth-profile" style="display:none;">
+                            <span class="icon_profile"></span> 
+                            <span id="username-display"></span> 
+                            <a href="#" id="logout-button" class="primary-btn">Logout</a> 
+                    </div>
+
+                        <a href="#add-anime" id="admin-link" class="primary-btn" style="display:none;">
+                            Add Anime
+                        </a>
+                </div>
                 </div>
             </div>
             <div id="mobile-menu-wrap"></div>
@@ -91,6 +107,7 @@
             <section id="sign" data-load="signup.html"><h1>Sing In</h1></section>
             <section id="log" data-load="login.html"><h1>Log in</h1></section>
             <section id="add" data-load="add-anime.html"><h1>Add Anime</h1></section>
+            <section id="edit" data-load="edit-anime.html"><h1>Edit Anime</h1></section>
     </section>
     <!-- Header End -->
 
@@ -126,5 +143,10 @@
 <script src="./assets/js/jquery.spapp.min.js"></script>
 <script src="./assets/js/router.js"></script>
 <script src="./assets/js/player.js"></script>
+<script src="./assets/js/add.js"></script>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

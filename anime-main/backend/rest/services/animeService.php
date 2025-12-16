@@ -4,23 +4,23 @@ require_once __DIR__ . '/../dao/AnimeDao.php';
 require_once __DIR__ . '/../dao/EpisodeDao.php';
 
 class AnimeService extends BaseService {
-    private $episode_dao;
-   
-    public function __construct() {
-        $dao = new AnimeDao();
-        parent::__construct($dao);
-        $this->episode_dao = new EpisodeDao();
+    private $anime_dao; 
+
+    public function __construct()
+    {
+        $this->anime_dao = new AnimeDao(); 
+        parent::__construct($this->anime_dao);
     }
 
     /**
      * anime for home/category
      */
-    public function get_anime_listing($offset, $limit, $category_id) {
+    public function get_anime_listing($offset, $limit, $search) {
+        
         $offset = (int) $offset;
         $limit = (int) $limit;
-        $category_id = $category_id ? (int) $category_id : null;
-       
-        return $this->dao->getAnimeListing($offset, $limit, $category_id);
+        
+        return $this->anime_dao->getAnimeListing($offset, $limit, $search);
     }
 
     /**
@@ -38,7 +38,6 @@ class AnimeService extends BaseService {
      * add new anime, first episode
      */
     public function add_new_anime($data) {
-        // insert 
         $anime_data = [
             'title' => $data['title'],
             'type' => $data['type'],
@@ -53,7 +52,6 @@ class AnimeService extends BaseService {
 
         // insert-anime_studio
         if (!empty($data['studio_id'])) {
-            // studio_id=arrayIDs/singleID
             $studio_ids = is_array($data['studio_id']) ? $data['studio_id'] : [$data['studio_id']];
             foreach ($studio_ids as $studio_id) {
                  $this->dao->addAnimeStudio($anime_id, (int)$studio_id);
