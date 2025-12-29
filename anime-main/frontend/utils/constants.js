@@ -1,5 +1,5 @@
 let Constants = {
-  PROJECT_BASE_URL: "http://localhost/WebFull-StackApp/anime-main/backend/",
+  PROJECT_BASE_URL: "https://octopus-app-4n4ee.ondigitalocean.app/backend",
   USER_ROLE: "visitor",
   ADMIN_ROLE: "admin"
 };
