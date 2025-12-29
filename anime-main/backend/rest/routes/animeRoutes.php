@@ -32,14 +32,22 @@
 * )
 * )
 */
+Flight::route('GET /anime/listing/@offset/@limit/@search/@category_id', function($offset, $limit, $search, $category_id){
+    if($search == 'NULL') $search = null;
+    if($category_id == 'NULL') $category_id = null;
+    
+    Flight::json(Flight::animeService()->get_anime_listing($offset, $limit, $search, $category_id));
+});
+
+// 2. STANDARD ROUTE
 Flight::route('GET /anime', function(){
     $offset = Flight::request()->query['offset'] ?? 0;
     $limit = Flight::request()->query['limit'] ?? 10;
+    $search = Flight::request()->query['search'] ?? null;
     $category_id = Flight::request()->query['category_id'] ?? null;
    
-    Flight::json(Flight::animeService()->get_anime_listing($offset, $limit, $category_id));
+    Flight::json(Flight::animeService()->get_anime_listing($offset, $limit, $search, $category_id));
 });
-
 /**
 * @OA\Get(
 * path="/anime/{id}",
@@ -141,7 +149,6 @@ Flight::route('POST /admin/anime/add', function() {
         Flight::halt(400, json_encode(['error' => $e->getMessage()]));
     }
 });
-
 /**
 * @OA\Delete(
 * path="/anime/{id}",
@@ -169,3 +176,14 @@ Flight::route('DELETE /anime/@id', function($id){
         Flight::halt(400, json_encode(['error' => $e->getMessage()]));
     }
 });
+
+Flight::route('PATCH /admin/anime/update/@id', function($id) {
+    Flight::authMiddleware()->authorize(Roles::ADMIN);
+    try {
+        $data = Flight::request()->data->getData();
+        Flight::json(Flight::animeService()->update_anime($id, $data));
+    } catch (Exception $e) {
+        Flight::halt(400, json_encode(['error' => $e->getMessage()]));
+    }
+});
+?>

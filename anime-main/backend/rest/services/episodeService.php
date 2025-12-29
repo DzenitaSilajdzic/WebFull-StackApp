@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/BaseService.php';
-require_once __DIR__ . '/../dao/EpisodeDao.php';
+require_once __DIR__ . '/baseService.php';
+require_once __DIR__ . '/../dao/episodeDao.php';
 
-class EpisodeService extends BaseService {
+class episodeService extends baseService {
     public function __construct() {
         $dao = new EpisodeDao();
         parent::__construct($dao);

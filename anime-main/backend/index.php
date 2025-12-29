@@ -5,12 +5,12 @@ require_once __DIR__ . '/rest/config.php';
 
 require_once 'rest/services/AuthService.php';
 require_once 'middleware/AuthMiddleware.php';
-require_once 'rest/services/UserService.php';
-require_once 'rest/services/AnimeService.php';
-require_once 'rest/services/EpisodeService.php';
-require_once 'rest/services/CommentService.php';
-require_once 'rest/services/CategoryService.php';
-require_once 'rest/services/StudioService.php';
+require_once 'rest/services/userService.php';
+require_once 'rest/services/animeService.php';
+require_once 'rest/services/episodeService.php';
+require_once 'rest/services/commentService.php';
+require_once 'rest/services/categoryService.php';
+require_once 'rest/services/studioService.php';
 
 
 ini_set('display_errors', 1);
@@ -26,8 +26,12 @@ Flight::register('db', 'PDO', array('mysql:host='.Config::DB_HOST().';dbname='.C
 
 Flight::register('authService', 'AuthService');
 Flight::register('authMiddleware', 'AuthMiddleware');
-Flight::register('userService', 'UserService');
-Flight::register('animeService', 'AnimeService');
+Flight::register('userService', 'userService');
+Flight::register('animeService', 'animeService');
+Flight::register('categoryService', 'categoryService'); 
+Flight::register('episodeService', 'episodeService');
+Flight::register('commentService', 'commentService');
+Flight::register('studioService', 'studioService');
 
 
 $path = str_replace($_SERVER['DOCUMENT_ROOT'], '', str_replace('\\', '/', __DIR__));
@@ -36,14 +40,28 @@ Flight::set('flight.base_url', $path);
 
 Flight::route('/*', function() {
     $url = Flight::request()->url;
-    
-    if ($url === '/' ||
-        strpos($url, '/auth/login') !== FALSE ||
-        strpos($url, '/auth/register') !== FALSE ||
-        strpos($url, '/docs') !== FALSE) {
-        return TRUE;
-    } 
-    
+    $method = Flight::request()->method;
+
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
+
+    if ($method === 'OPTIONS') {
+        Flight::halt(200);
+    }
+
+   if ($method === 'GET' && (
+        strpos($url, '/anime') !== FALSE || 
+        strpos($url, '/utilities/categories') !== FALSE ||
+        strpos($url, '/episodes') !== FALSE || 
+        strpos($url, '/comments') !== FALSE || 
+        strpos($url, '/studios') !== FALSE
+    )) {
+        if (strpos($url, '/admin/') === FALSE) {
+            return TRUE;
+        }
+    }
+
     try {
         $authHeader = Flight::request()->getHeader("Authorization");
         if(!$authHeader) $authHeader = Flight::request()->getHeader("Authentication");
@@ -57,9 +75,14 @@ Flight::route('/*', function() {
 });
 
 
-require_once 'rest/routes/AuthRoutes.php';
-require_once 'rest/routes/userRoutes.php';
+
 require_once 'rest/routes/animeRoutes.php';
+require_once 'rest/routes/AuthRoutes.php';
+require_once 'rest/routes/categoryRoutes.php';
+require_once 'rest/routes/commentRoutes.php';
+require_once 'rest/routes/episodeRoutes.php';
+require_once 'rest/routes/studioRoutes.php';
+require_once 'rest/routes/userRoutes.php';
 
 Flight::start();
 ?>

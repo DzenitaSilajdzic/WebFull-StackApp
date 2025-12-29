@@ -1,7 +1,7 @@
 <?php
-require_once 'BaseDao.php';
+require_once __DIR__ . '/baseDao.php';
 
-class CommentDao extends BaseDao
+class commentDao extends baseDao
 {
     public function __construct()
     {
@@ -25,17 +25,11 @@ class CommentDao extends BaseDao
         return $this->query($query, [':anime_id' => $anime_id]);
     }
 
-    /**
-     * new comment insert
-     */
     public function addComment($comment)
     {
         return $this->add($comment);
     }
    
-    /**
-     * status update
-     */
     public function updateStatus($id, $status)
     {
         return $this->update(['status' => $status], $id);

@@ -1,17 +1,27 @@
+window.apiCall = function(url, method, data) {
+    return new Promise((resolve, reject) => {
+        RestClient.request(url, method, data, function(response) {
+            resolve(response);
+        }, function(error) {
+            reject(error);
+        });
+    });
+};
+
 window.currentAnimeId = null; 
 
 function updateAuthUI() {
-    if (typeof window.Auth === 'undefined') return;
+    if (typeof authModel === 'undefined') return;
     
-    const user = window.Auth.getUser();
-    const isLoggedIn = window.Auth.isLoggedIn();
+    const user = authModel.getUser();
+    const isLoggedIn = authModel.isLoggedIn();
     
     if (isLoggedIn) {
         $('#unauth-links').hide();
         $('#username-display').text(user.username || user.email); 
         $('#auth-profile').show();
 
-        if (window.Auth.isAdmin()) { 
+        if (authModel.isAdmin()) { 
             $('#admin-link').show();
         } else {
             $('#admin-link').hide();
@@ -28,7 +38,7 @@ window.loadHomePageData = function() {
     const container = $('#product-list-container'); 
     container.empty().html('<div class="col-lg-12 text-center"><p>Loading anime list...</p></div>'); 
     
-    window.apiCall('anime/listing/0/8/NULL', 'GET')
+    window.apiCall('anime/listing/0/8/NULL/NULL', 'GET')
         .then(data => {
             container.empty(); 
             
@@ -57,7 +67,11 @@ window.loadHomePageData = function() {
             
             $('.set-bg').each(function() {
                 var bg = $(this).data('setbg');
-                $(this).css('background-image', 'url(' + bg + ')');
+                if (bg && bg !== 'undefined' && bg !== 'null') {
+                    $(this).css('background-image', 'url(' + bg + ')');
+                } else {
+                    $(this).css('background-image', 'url("assets/img/hero/hero-1.jpg")'); 
+                }
             });
         })
         .catch(error => {
@@ -79,7 +93,7 @@ window.loadAnimeDetails = function(animeId) {
             const genres = anime.genres ? anime.genres.split(',').map(g => g.trim()) : [];
             const studios = anime.studios ? anime.studios.split(',').map(s => s.trim()) : [];
 
-            const adminButtonsHtml = window.Auth.isAdmin() ? `
+            const adminButtonsHtml = authModel.isAdmin() ? `
                 <div class="admin-buttons mt-3 mb-3">
                     <a href="#edit-anime?id=${animeId}" id="edit-anime-button" class="site-btn">
                         <i class="fa fa-edit"></i> Edit Anime
@@ -137,7 +151,11 @@ window.loadAnimeDetails = function(animeId) {
 
             $('.set-bg').each(function() {
                 var bg = $(this).data('setbg');
-                $(this).css('background-image', 'url(' + bg + ')');
+                if (bg && bg !== 'undefined' && bg !== 'null') {
+                    $(this).css('background-image', 'url(' + bg + ')');
+                } else {
+                    $(this).css('background-image', 'url("assets/img/hero/hero-1.jpg")'); 
+                }
             });
             
             window.loadEpisodeList(animeId);
@@ -152,13 +170,11 @@ window.loadAnimeDetails = function(animeId) {
         });
 };
 
-
-
 window.loadComments = function(animeId) {
     const $container = $('#comments-container');
     $container.empty().html('<div class="text-center"><p>Fetching comments...</p></div>');
     
-    const currentUser = window.Auth.getUser();
+    const currentUser = authModel.getUser();
 
     window.apiCall('comments/anime/' + animeId, 'GET')
         .then(comments => {
@@ -204,11 +220,10 @@ window.loadComments = function(animeId) {
 };
 
 
-
 window.handleCommentSubmission = function(e) {
     e.preventDefault();
     
-    if (!window.Auth.isLoggedIn()) {
+    if (!authModel.isLoggedIn()) {
         $('#comment-status').html('<p class="text-danger">You must be logged in to post a comment.</p>');
         return;
     }
@@ -251,15 +266,17 @@ window.handleDeleteComment = function(e) {
     e.preventDefault();
     const commentId = $(e.currentTarget).data('comment-id');
     
-    if (!window.Auth.isLoggedIn()) {
+    if (!authModel.isLoggedIn()) {
         alert("Authorization failed. Please log in.");
         return;
     }
     
     if (confirm("Are you sure you want to delete this comment?")) {
-        window.apiCall('comments/delete/' + commentId, 'POST', { id: commentId })
+        window.apiCall('comments/' + commentId, 'DELETE', null)
             .then(() => {
-                window.loadComments(window.currentAnimeId); 
+                if(window.currentAnimeId) {
+                    window.loadComments(window.currentAnimeId); 
+                }
             })
             .catch(error => {
                 alert("Failed to delete comment: " + (error.message || 'Check network or backend setup.'));
@@ -272,7 +289,7 @@ window.loadEpisodeList = function(animeId) {
     const $container = $('#episode-list-container');
     $container.empty().html('<div class="col-lg-12 text-center"><p>Loading episodes...</p></div>'); 
     
-    const isAdmin = window.Auth.isAdmin();
+    const isAdmin = authModel.isAdmin();
 
     window.apiCall('episode/anime/' + animeId, 'GET')
         .then(episodes => {
@@ -327,7 +344,7 @@ window.handleDeleteEpisode = function(e) {
     e.preventDefault();
     const episodeId = $(e.currentTarget).data('episode-id');
     
-    if (!window.Auth.isAdmin()) {
+    if (!authModel.isAdmin()) {
         alert("Authorization failed. Admin privileges required.");
         return;
     }
@@ -348,7 +365,7 @@ $(document).ready(function() {
 
     $('#logout-button').on('click', function(e) {
         e.preventDefault();
-        window.Auth.logout();
+        authModel.logout();
         updateAuthUI();
         window.location.hash = '#home'; 
     });
@@ -356,4 +373,18 @@ $(document).ready(function() {
     $(window).on('hashchange', function() {
         updateAuthUI();
     });
+});
+
+$(window).on('load', function () {
+    $(".loader").fadeOut();
+    $("#preloder").delay(200).fadeOut("slow");
+    $('.filter__controls li').on('click', function () {
+        $('.filter__controls li').removeClass('active');
+        $(this).addClass('active');
+    });
+    
+    if ($('.product__sidebar__view .filter__controls').length > 0) {
+        var containerEl = document.querySelector('.product__sidebar__view .filter__controls');
+        var mixer = mixitup(containerEl);
+    }
 });

@@ -6,18 +6,17 @@
                     <h3>Login</h3>
                     <form id="login-form">
                         <div class="input__item">
-                            <input type="text" placeholder="Username or Email" id="username" required>
+                            <input type="text" name="username" placeholder="Username or Email" id="username" required>
                             <span class="icon_profile"></span>
                         </div>
                         <div class="input__item">
-                            <input type="password" placeholder="Password" id="password" required>
+                            <input type="password" name="password" placeholder="Password" id="password" required>
                             <span class="icon_lock"></span>
                         </div>
                         <div id="login-status" class="mt-3 text-center"></div>
 
                         <button type="submit" class="site-btn">Login Now</button>
                     </form>
-                    <a href="#" class="forget_pass">Forgot Your Password?</a>
                 </div>
                 <div class="login__register">
                     <p>Don't have an account?</p>
@@ -29,39 +28,45 @@
 </section>
 
 <script>
-    $(function() {
-        const $form = $('#login-form');
-        const $status = $('#login-status');
+    if (typeof $.fn.validate === 'undefined') {
+        console.error("CRITICAL ERROR: jQuery Validate is NOT loaded. The form will submit normally (URL params) instead of using JS.");
+        alert("Error: Validation library missing. Check internet or index.html links.");
+    } else {
+        console.log("Validation library found. Attaching to #login-form...");
         
-        $form.on('submit', function(e) {
-            e.preventDefault();
-            $status.empty();
+        $("#login-form").validate({
+            rules: {
+                username: "required",
+                password: {
+                    required: true,
+                    minlength: 5
+                }
+            },
+            messages: {
+                username: "Please enter your username or email",
+                password: {
+                    required: "Please provide your password",
+                    minlength: "Your password must be at least 5 characters long"
+                }
+            },
+            submitHandler: function(form) {
+                console.log("Form submitted via JS handler. Preventing default...");
+                
+                if (typeof AuthService === 'undefined') {
+                    console.error("CRITICAL ERROR: AuthService is missing!");
+                    alert("AuthService is missing. Check console.");
+                    return false;
+                }
 
-            const loginData = {
-                username: $form.find('#username').val(), 
-                password: $form.find('#password').val()
-            };
+                if (typeof Utils === 'undefined') {
+                     console.error("CRITICAL ERROR: Utils is missing!");
+                     return false;
+                }
 
-            if (!loginData.username || !loginData.password) {
-                $status.html('<p class="text-danger">Username/Email and password are required.</p>');
-                return;
+                const data = Utils.get_form_data(form);
+                AuthService.login(data);
+                return false; 
             }
-
-            $status.html('<p class="text-info">Logging in...</p>');
-
-            window.apiCall('auth/login', 'POST', loginData)
-                .then(response => {
-                    window.Auth.setToken(response.data.token, response.data.user);
-                    
-                    if (window.updateAuthUI) window.updateAuthUI(); 
-
-                    $status.html('<p class="text-success">Login successful! Redirecting...</p>');
-                    window.location.hash = '#home'; 
-                })
-                .catch(error => {
-                    console.error("Login failed:", error);
-                    $status.html('<p class="text-danger">' + (error.message || 'Login failed due to an unexpected error.') + '</p>');
-                });
         });
-    });
+    }
 </script>

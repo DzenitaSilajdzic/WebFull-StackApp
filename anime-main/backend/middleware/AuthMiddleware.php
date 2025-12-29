@@ -7,39 +7,57 @@ use Firebase\JWT\Key;
 
 class AuthMiddleware {
 
-
     public function verifyToken($header) {
+        if (empty($header)) {
+             if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+                 $header = $_SERVER['HTTP_AUTHORIZATION'];
+             } elseif (function_exists('apache_request_headers')) {
+                 $requestHeaders = apache_request_headers();
+                 if (isset($requestHeaders['Authorization'])) {
+                     $header = $requestHeaders['Authorization'];
+                 }
+             }
+        }
+
         if (empty($header) || strpos($header, 'Bearer ') !== 0) {
-            Flight::halt(401, "Missing or invalid Authorization header. Format: 'Bearer [token]'");
+            Flight::halt(401, json_encode(['message' => "Missing Authorization header"]));
             return;
         }
 
         $token = substr($header, 7);
 
         try {
-            $decoded_token = JWT::decode($token, new Key(Config::JWT_SECRET(), 'HS256'));
+            $decoded = JWT::decode($token, new Key(Config::JWT_SECRET(), 'HS256'));
 
-            Flight::set('user', $decoded_token->user);
+            $user_data = isset($decoded->user) ? $decoded->user : $decoded;
+
+            Flight::set('user', $user_data);
             Flight::set('jwt_token', $token);
 
             return TRUE;
 
         } catch (\Exception $e) {
-            Flight::halt(401, "Invalid Token: " . $e->getMessage());
+            Flight::halt(401, json_encode(['message' => "Invalid Token: " . $e->getMessage()]));
             return;
         }
     }
 
-
     public function authorize($required_role) {
         $user = Flight::get('user');
 
-        if (!$user || !isset($user->role)) {
-            Flight::halt(403, json_encode(['message' => 'Forbidden - No role assigned']));
+        if (!$user) {
+            Flight::halt(403, json_encode(['message' => 'Forbidden - User not authenticated']));
             die;
         }
 
-        if ($user->role !== $required_role) {
+        $role = null;
+        if (is_object($user) && isset($user->role)) {
+            $role = $user->role;
+        } elseif (is_array($user) && isset($user['role'])) {
+            $role = $user['role'];
+        }
+
+        if ($role !== $required_role) {
             Flight::halt(403, json_encode(['message' => 'Forbidden - Insufficient permissions']));
             die;
         }

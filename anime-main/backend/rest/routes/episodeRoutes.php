@@ -30,23 +30,13 @@ Flight::route('GET /episodes/anime/@anime_id/default', function($anime_id){
 
 /**
 * @OA\Get(
-* path="/episodes/anime/{anime_id}/list",
+* path="/episodes/anime/{anime_id}",
 * tags={"episodes"},
-* summary="Get a list of all episodes for an anime (for episode navigation buttons)",
-* @OA\Parameter(
-* name="anime_id",
-* in="path",
-* required=true,
-* description="ID of the anime",
-* @OA\Schema(type="integer", example=1)
-* ),
-* @OA\Response(
-* response=200,
-* description="Returns an array of episode objects (id, title, number)"
-* )
+* summary="Get a list of all episodes for an anime (Frontend Shortcut)",
+* @OA\Response(response=200, description="Returns list of episodes")
 * )
 */
-Flight::route('GET /episodes/anime/@anime_id/list', function($anime_id){
+Flight::route('GET /episodes/anime/@anime_id', function($anime_id){
     Flight::json(Flight::episodeService()->get_episodes_by_anime($anime_id));
 });
 

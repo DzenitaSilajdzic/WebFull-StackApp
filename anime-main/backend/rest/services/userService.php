@@ -1,9 +1,8 @@
 <?php
-require_once __DIR__ . '/BaseService.php';
-require_once __DIR__ . '/../dao/UserDao.php';
-// JWT libraries later
+require_once __DIR__ . '/baseService.php';
+require_once __DIR__ . '/../dao/userDao.php';
 
-class UserService extends BaseService {
+class userService extends baseService {
     public function __construct() {
         $dao = new UserDao();
         parent::__construct($dao);
@@ -11,7 +10,7 @@ class UserService extends BaseService {
 
     /**
      * sign-up 
-     * @throws Exception if username/email exists
+     * error if username/email exists
      */
     public function register($data) {
         if (empty($data['username']) || empty($data['password']) || empty($data['email'])) {
@@ -36,8 +35,8 @@ class UserService extends BaseService {
 
     /**
      * login
-     * @return User success
-     * @throws Exception failure
+     * return success
+     * error failure
      */
     public function login($data) {
         if (empty($data['username']) || empty($data['password'])) {
@@ -50,7 +49,7 @@ class UserService extends BaseService {
             throw new Exception("Invalid username or password.");
         }
        // compare passwords
-        if ($user['password'] === $data['password']) {
+        if (password_verify($data['password'], $user['password'])) {
             unset($user['password']);
             return $user;
         } else {

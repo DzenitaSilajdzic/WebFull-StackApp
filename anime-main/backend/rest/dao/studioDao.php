@@ -1,18 +1,16 @@
 <?php
-require_once 'BaseDao.php';
+require_once __DIR__ . '/baseDao.php';
 
-class StudioDao extends BaseDao
+class studioDao extends baseDao
 {
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct("studios");
     }
-
     /**
      * for Add Anime page
      */
     public function getAllActiveStudios()
     {
-        return $this->query("SELECT id, name FROM studios WHERE status = 'working' ORDER BY name ASC", []);
+        return $this->query("SELECT * FROM studios", []);
     }
 }

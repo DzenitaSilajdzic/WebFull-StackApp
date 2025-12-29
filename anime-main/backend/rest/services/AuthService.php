@@ -1,12 +1,12 @@
 <?php
-require_once __DIR__ . '/BaseService.php';
+require_once __DIR__ . '/baseService.php';
 require_once __DIR__ . '/../dao/AuthDao.php';
 require_once __DIR__ . '/../../data/Roles.php'; 
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-class AuthService extends BaseService
+class AuthService extends baseService
 {
     private $auth_dao;
 
@@ -18,6 +18,15 @@ class AuthService extends BaseService
 
     public function register($entity)
     {
+        $user_by_email = $this->auth_dao->get_user_by_email($entity['email']);
+        if ($user_by_email) {
+            return ['success' => false, 'error' => 'Email is already taken.'];
+        }
+
+        $user_by_name = $this->auth_dao->get_user_by_username($entity['username']);
+        if ($user_by_name) {
+            return ['success' => false, 'error' => 'Username is already taken.'];
+        }
 
         $entity['password'] = password_hash($entity['password'], PASSWORD_BCRYPT);
         
@@ -25,16 +34,15 @@ class AuthService extends BaseService
             $entity['role'] = 'visitor';
         }
 
-        $new_user_id = parent::add($entity);
-        $entity['id'] = $new_user_id;
-        unset($entity['password']);
+        $created_user = parent::add($entity);
+        
+        unset($created_user['password']);
 
-        return ['success' => true, 'data' => $entity];
+        return ['success' => true, 'data' => $created_user];
     }
 
     public function login($entity)
     {
-
         $user = null;
         
         if (isset($entity['email'])) {
