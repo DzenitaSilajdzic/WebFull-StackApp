@@ -6,15 +6,15 @@
                     <h3>Sign Up</h3>
                     <form id="signup-form">
                         <div class="input__item">
-                            <input type="text" placeholder="Username" id="username" required>
+                            <input type="text" name="username" placeholder="Username" id="username" required>
                             <span class="icon_profile"></span>
                         </div>
                         <div class="input__item">
-                            <input type="email" placeholder="Email address" id="email" required>
+                            <input type="email" name="email" placeholder="Email address" id="email" required>
                             <span class="icon_mail"></span>
                         </div>
                         <div class="input__item">
-                            <input type="password" placeholder="Password" id="password" required>
+                            <input type="password" name="password" placeholder="Password" id="password" required>
                             <span class="icon_lock"></span>
                         </div>
                         <div id="signup-status" class="mt-3 text-center"></div>
@@ -30,51 +30,39 @@
         </div>
     </div>
 </section>
-
 <script>
-    $(function() {
-        const $form = $('#signup-form');
-        const $status = $('#signup-status');
-
-        $form.on('submit', function(e) {
-            e.preventDefault();
-            $status.empty(); 
-
-            const signupData = {
-                username: $form.find('#username').val(),
-                email: $form.find('#email').val(),
-                password: $form.find('#password').val()
-            };
-
-            if (!signupData.username || !signupData.email || !signupData.password) {
-                $status.html('<p class="text-danger">All fields are required.</p>');
-                return;
+    $("#signup-form").validate({
+        rules: {
+            username: {
+                required: true,
+                minlength: 3
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            password: {
+                required: true,
+                minlength: 8
             }
-            if (signupData.password.length < 6) { 
-                $status.html('<p class="text-danger">Password must be at least 6 characters long.</p>');
-                return;
+        },
+        messages: {
+            username: {
+                required: "Please enter a username",
+                minlength: "Username must be at least 3 characters long"
+            },
+            email: {
+                required: "Please enter your email",
+                email: "Please enter a valid email address"
+            },
+            password: {
+                required: "Please provide a password",
+                minlength: "Your password must be at least 8 characters long"
             }
-
-            $status.html('<p class="text-info">Registering user...</p>');
-
-            window.apiCall('auth/register', 'POST', signupData)
-                .then(response => {
-                    $status.html('<p class="text-success">Registration successful! Logging you in...</p>');
-                    
-                    return window.apiCall('auth/login', 'POST', { 
-                        username: signupData.username, 
-                        password: signupData.password 
-                    });
-                })
-                .then(loginResponse => {
-                    window.Auth.setToken(loginResponse.data.token, loginResponse.data.user);
-                    if (window.updateAuthUI) window.updateAuthUI(); 
-                    window.location.hash = '#home';
-                })
-                .catch(error => {
-                    console.error("Registration failed:", error);
-                    $status.html('<p class="text-danger">' + (error.message || 'Registration failed due to an unexpected error.') + '</p>');
-                });
-        });
+        },
+        submitHandler: function(form) {
+            const data = Utils.get_form_data(form);
+            AuthService.register(data);
+        }
     });
 </script>

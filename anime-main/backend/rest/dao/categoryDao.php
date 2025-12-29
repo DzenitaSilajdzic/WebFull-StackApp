@@ -1,7 +1,7 @@
 <?php
-require_once 'BaseDao.php';
+require_once 'baseDao.php';
 
-class CategoryDao extends BaseDao
+class categoryDao extends baseDao
 {
     public function __construct()
     {

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../config.php";
 
-class BaseDao
+class baseDao
 {
     protected $connection;
     private $table_name;

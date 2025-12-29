@@ -1,41 +1,44 @@
 <?php
-require_once 'BaseDao.php';
+require_once 'baseDao.php';
 
-class AnimeDao extends BaseDao
+class animeDao extends baseDao
 {
     public function __construct()
     {
         parent::__construct("anime");
     }
 
-   public function getAnimeListing($offset = 0, $limit = 10, $search = NULL) {
+    public function getAnimeListing($offset = 0, $limit = 10, $search = NULL, $category_id = NULL) {
+        $limit = (int) $limit;
+        $offset = (int) $offset;
 
-    $limit = (int) $limit;
-    $offset = (int) $offset;
+        $query = "SELECT DISTINCT a.* FROM anime a";
+        
+        $params = [];
+        $where_clauses = [];
 
-    $query = "
-        SELECT a.* FROM anime a
-    ";
-    
-    $params = [];
-    $where_clauses = [];
+        if ($category_id && $category_id != 'NULL') {
+            $query .= " JOIN anime_categories ac ON a.id = ac.anime_id ";
+            $where_clauses[] = " ac.category_id = :category_id ";
+            $params['category_id'] = $category_id;
+        }
 
-    if ($search) {
-        $where_clauses[] = " a.name LIKE :search OR a.description LIKE :search ";
-        $params['search'] = '%' . $search . '%';
+        if ($search && $search != 'NULL') {
+            $where_clauses[] = " (a.title LIKE :search OR a.description LIKE :search) ";
+            $params['search'] = '%' . $search . '%';
+        }
+        
+        $where_clauses[] = " a.status != 'deleted' ";
+
+        if (!empty($where_clauses)) {
+            $query .= " WHERE " . implode(' AND ', $where_clauses);
+        }
+
+        $query .= " ORDER BY a.id DESC LIMIT " . $limit . " OFFSET " . $offset;
+
+        return $this->query($query, $params); 
     }
-    if (!empty($where_clauses)) {
-        $query .= " WHERE " . implode(' AND ', $where_clauses);
-    }
 
-    $query .= " LIMIT " . $limit . " OFFSET " . $offset;
-
-    return $this->query($query, $params); 
-}
-
-    /**
-     * data for one anime
-     */
     public function getAnimeDetails($anime_id)
     {
         $query = "
@@ -54,34 +57,22 @@ class AnimeDao extends BaseDao
         return $this->query_unique($query, [':id' => $anime_id]);
     }
    
-    /**
-     * new anime insert
-     */
     public function addAnime($anime)
     {
         return $this->add($anime);
     }
    
-    /**
-     * status update
-     */
     public function updateStatus($id, $status)
     {
         return $this->update(['status' => $status], $id);
     }
 
-    /**
-     * for many-to-many with categories.
-     */
     public function addAnimeCategory($anime_id, $category_id)
     {
         $junctionDao = new BaseDao('anime_categories');
         return $junctionDao->add(['anime_id' => $anime_id, 'category_id' => $category_id]);
     }
 
-    /**
-     * for many-to-many with studios.
-     */
     public function addAnimeStudio($anime_id, $studio_id)
     {
         $junctionDao = new BaseDao('anime_studios');

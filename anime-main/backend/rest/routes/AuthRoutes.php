@@ -5,9 +5,7 @@ require_once __DIR__ . '/../../rest/services/AuthService.php';
 Flight::route('POST /auth/register', function() {
     $data = Flight::request()->data->getData();
     
-
     $auth_service = new AuthService(); 
-    
     $response = $auth_service->register($data);
     
     if($response['success']) {

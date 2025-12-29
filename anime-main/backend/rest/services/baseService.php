@@ -1,6 +1,6 @@
 <?php
 
-abstract class BaseService {
+abstract class baseService {
     protected $dao;
 
     public function __construct($dao)

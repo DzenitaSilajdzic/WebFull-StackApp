@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/BaseService.php';
-require_once __DIR__ . '/../dao/CommentDao.php';
+require_once __DIR__ . '/baseService.php';
+require_once __DIR__ . '/../dao/commentDao.php';
 
-class CommentService extends BaseService {
+class commentService extends baseService {
     public function __construct() {
-        $dao = new CommentDao();
+        $dao = new commentDao();
         parent::__construct($dao);
     }
 
@@ -27,7 +27,7 @@ class CommentService extends BaseService {
             'user_id' => (int)$data['user_id'],
             'anime_id' => (int)$data['anime_id'],
             'text' => $data['text'],
-            'reply_id' => $data['reply_id'] ? (int)$data['reply_id'] : null,
+            'reply_id' => !empty($data['reply_id']) ? (int)$data['reply_id'] : null,
             'date_posted' => date('Y-m-d H:i:s'),
             'status' => 'active'
         ];
@@ -36,9 +36,14 @@ class CommentService extends BaseService {
     }
    
     /**
-     * update status=delited
+     * HARD DELETE: Completely removes row from database
      */
-    public function remove_comment($comment_id) {
-        return $this->dao->updateStatus($comment_id, 'hidden'); // hidden status
+    public function delete($id) {
+        return $this->dao->delete($id);
+    }
+
+    public function remove_comment($id) {
+        return $this->delete($id);
     }
 }
+?>

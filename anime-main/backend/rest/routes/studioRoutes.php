@@ -1,16 +1,17 @@
 <?php
 
 /**
-* @OA\Get(
-* path="/utilities/studios",
-* tags={"utilities"},
-* summary="Get a list of all working studios",
-* @OA\Response(
-* response=200,
-* description="Array of studios (ID and Name)"
-* )
-* )
-*/
-Flight::route('GET /utilities/studios', function(){
-    Flight::json(Flight::studioService()->get_active_studios());
+ * @OA\Get(
+ * path="/studios",
+ * tags={"studios"},
+ * summary="Get all production studios",
+ * @OA\Response(
+ * response=200,
+ * description="List of studios"
+ * )
+ * )
+ */
+Flight::route('GET /studios', function(){
+    Flight::json(Flight::studioService()->get_all_studios());
 });
+?>
